@@ -1,0 +1,8 @@
+ls
+cat file1.txt
+cd folder
+ls
+cd level12
+ls
+cd ..
+uptime

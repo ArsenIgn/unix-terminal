@@ -1,0 +1,3 @@
+ls
+cat no_file.txt
+ls
