@@ -1,19 +1,20 @@
 from parser import parse_command
 from commands import execute_command
 from config import parse_arguments, get_configuration
+from vfs import VFS
 VFS_NAME = "my_vfs"
 
-def run_command(command_line):
+def run_command(command_line, vfs):
     command, args = parse_command(command_line)
     
     if command == "exit":
         return False
     
-    execute_command(command, args)
+    execute_command(command, args,vfs)
 
     return True
 
-def run_script(script_path):
+def run_script(script_path, vfs):
     try:
         with open(script_path, "r", encoding="utf-8") as file:
             for line in file:
@@ -26,7 +27,7 @@ def run_script(script_path):
 
 
                 try:
-                    should_continue = run_command(command_line)
+                    should_continue = run_command(command_line,vfs)
 
                 except ValueError as error:
                     print(f"Ошибка: {error}")
@@ -53,8 +54,14 @@ def main():
     print("Стартовый скрипт:", config["startup_script"])
     print("Конфигурационный файл", config["config_path"])
 
+    if config["vfs_path"] is None:
+        print("Ошибка: путь к VFS не задан")
+        return
+
+    vfs = VFS(config["vfs_path"])
+
     if config["startup_script"]:
-        run_script(config["startup_script"])
+        run_script(config["startup_script"], vfs)
 
     while True:
         try:
@@ -63,8 +70,9 @@ def main():
             if not user_input.strip():
                 continue
 
-            if not run_command(user_input):
+            if not run_command(user_input, vfs):
                 break
+            
         except ValueError as error:
             print(f"Ошибка: {error}")
 

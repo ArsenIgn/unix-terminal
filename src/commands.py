@@ -12,13 +12,23 @@ def command_cd(args):
     print("Команда: cd")
     print("Аргументы:", args)
 
+def command_vfs_init(args, vfs):
+    if len(args) != 0:
+        raise ValueError("vfs-init: аргументы не поддерживаются")
+    vfs.reset()
+    print("VFS сброшена к состоянию по умолчанию")
 
-def execute_command(command, args):
+def execute_command(command, args, vfs=None):
     if command == "ls":
         command_ls(args)
 
     elif command == "cd":
         command_cd(args)
+
+    elif command == "vfs-init":
+        if vfs is None:
+            raise ValueError("VFS не инициализирована")
+        command_vfs_init(args, vfs)
 
     else: 
         raise ValueError(f"Неизвестная команда: {command}")
