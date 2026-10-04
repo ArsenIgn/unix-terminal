@@ -35,6 +35,12 @@ def command_uptime(args, vfs):
 
     print(f"Время работы: {seconds} сек.")
 
+def command_touch(args, vfs):
+    if len(args) != 1:
+        raise ValueError("touch: требуется один аргумент")
+
+    vfs.touch(args[0])
+
 def command_vfs_init(args, vfs):
     if len(args) != 0:
         raise ValueError("vfs-init: аргументы не поддерживаются")
@@ -44,7 +50,7 @@ def command_vfs_init(args, vfs):
 def execute_command(command, args, vfs=None):
     if vfs is None:
         raise ValueError("VFS не инициализирована")
-        
+
     if command == "ls":
         command_ls(args,vfs)
 
@@ -59,6 +65,9 @@ def execute_command(command, args, vfs=None):
 
     elif command == "uptime":
         command_uptime(args, vfs)
+
+    elif command == "touch":
+            command_touch(args, vfs)
 
     else: 
         raise ValueError(f"Неизвестная команда: {command}")

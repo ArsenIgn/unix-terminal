@@ -83,3 +83,25 @@ def test_uptime():
         seconds = vfs.get_uptime()
 
         assert seconds >= 0
+
+def test_touch():
+    with tempfile.TemporaryDirectory() as directory:
+        create_test_vfs(directory)
+        vfs = VFS(directory)
+
+        vfs.touch("new.txt")
+
+        assert "new.txt" in vfs.data
+        assert vfs.data["new.txt"] == ""
+
+
+def test_touch_only_in_memory():
+    with tempfile.TemporaryDirectory() as directory:
+        create_test_vfs(directory)
+        vfs = VFS(directory)
+
+        vfs.touch("new.txt")
+
+        file_path = os.path.join(directory, "new.txt")
+
+        assert not os.path.exists(file_path)

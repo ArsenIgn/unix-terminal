@@ -110,6 +110,34 @@ class VFS:
 
         return node
 
+    def touch(self, path):
+        parts = self._resolve_path(path)
+
+        if not parts:
+            raise ValueError("touch: неверный путь")
+
+        file_name = parts[-1]
+        parent_parts = parts[:-1]
+
+        directory = self.data
+
+        for part in parent_parts:
+            if part not in directory:
+                raise ValueError(f"директория не найдена: {path}")
+
+            directory = directory[part]
+
+            if not isinstance(directory, dict):
+                raise ValueError(f"не является директорией: {path}")
+
+        if file_name in directory:
+            if isinstance(directory[file_name], dict):
+                raise ValueError(f"это директория: {path}")
+
+            return
+
+        directory[file_name] = ""
+
     def get_uptime(self):
         return int(time.time() - self.start_time)
 
